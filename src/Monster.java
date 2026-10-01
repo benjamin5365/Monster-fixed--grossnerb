@@ -1,14 +1,28 @@
 public class Monster {
 
-    public static int specialMonsters = 1;
+    // INSTANCE VARIABLES
+    private int health;
+    private int maxDamage;
 
     // CONSTRUCTOR
     public Monster() {
-        if (specialMonsters > 0) {
-            System.out.println("I'm alive");
-            Monster.specialMonsters--;
-        } else {
-            System.out.println("I'm just a typical monster");
-        }
+        health = 100;
+        maxDamage = (int)(Math.random() * 15  + 1) + 10;
     }
+
+    // ACCESORS
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxDamage() {
+        return maxDamage;
+    }
+
+    // MUTATORS
+    public void takeDamage(int change) {
+        health -= change;
+    }
+
+
 }
