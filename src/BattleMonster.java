@@ -2,9 +2,11 @@ import java.util.Scanner;
 
 
 public class BattleMonster {
-    // STATIC CLASS VARIABLES
+    // CLASS (NOT INSTANCE) VARIABLES
     private static Puppy puppy;
     private static Monster[] monsters = new Monster[5];
+    private static int playerHealth = 100;
+    private static int maxDamage = 100;
 
     public static void main(String args[]) {
 
@@ -31,7 +33,17 @@ public class BattleMonster {
                 puppy = new Puppy();
             }
             // ATTACK
+            else if(input.equals("fight")) {
+                // CHECK FOR PUPPY
+                if (puppy != null) {
+                    johnWick();
+                }
 
+                //IF NO DOG AND NO DOG ATTACK, ROLL FOR DAMAGE
+
+                //APPLY DAMAGE TO FIRST MONSTER
+
+            }
             // HEAL
 
 
@@ -60,5 +72,13 @@ public class BattleMonster {
             }
         }
     }
-
+    
+    public static void johnWick() {
+        //LOOP THROUGH ALL MONSTERS AND THE PUPPY DESTROYS THEM
+        for(Monster m: monsters) {
+            if (m != null) {
+                m.takeDamage(m.getHealth());
+            }
+        }
+    }
 }

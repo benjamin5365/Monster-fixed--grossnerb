@@ -1,0 +1,13 @@
+public class Quiz {
+    public static String brokenMirror(String str) {
+        String result = "";
+        for(int i = str.length()-1; i > -1; i-=2) {
+            result = result + str.substring(i, i+1);
+        }
+        return result;
+    }
+
+    public static void main(String args[]) {
+        System.out.println(brokenMirror("tuesday"));
+    }
+}
