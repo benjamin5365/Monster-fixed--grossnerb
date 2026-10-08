@@ -36,7 +36,12 @@ public class BattleMonster {
             else if(input.equals("fight")) {
                 // CHECK FOR PUPPY
                 if (puppy != null) {
-                    johnWick();
+                    // 1 in 100 chance of john wick
+                    if (((int)(Math.random()*100)+1) == 1) {
+                        johnWick();
+                    }
+                    
+            
                 }
 
                 //IF NO DOG AND NO DOG ATTACK, ROLL FOR DAMAGE
