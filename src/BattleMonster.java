@@ -46,7 +46,12 @@ public class BattleMonster {
 
                 //IF NO DOG AND NO DOG ATTACK, ROLL FOR DAMAGE
                 int damage = (int)(Math.random() * maxDamage);
-                findWeakest().takeDamage(damage);
+                Monster target = findWeakest();
+                target.takeDamage(damage);
+                System.out.println("Monster health: " + target.getHealth());
+                if (target.getHealth() <= 0) {
+                    target = null;
+                }
 
                 //APPLY DAMAGE TO FIRST MONSTER
 
@@ -59,7 +64,20 @@ public class BattleMonster {
             }
 
             // MONSTER'S TURN
-
+            for(Monster m: monsters) {
+                if (m == null) {
+                    int newMonster = (int)(Math.random() * 11);
+                    if (newMonster >= 5) {
+                        makeMonster();
+                        System.out.println("New monster joins the battle");
+                    }
+                } else {
+                    int monsterDamage = (int)(Math.random() * m.getMaxDamage());
+                    playerHealth -= monsterDamage;
+                    System.out.println("\nPlayer takes " + monsterDamage + " damage.");
+                    System.out.println("Player health: " + playerHealth + "\n");
+                }
+            }
 
         } while (!input.equals("quit"));
     }
@@ -94,7 +112,7 @@ public class BattleMonster {
     }
 
     public static Monster findWeakest() {
-        Monster result;
+        Monster result = null;
 
         for (Monster m: monsters) {
             if (m != null) {
@@ -103,7 +121,7 @@ public class BattleMonster {
         }
 
         for (Monster m: monsters) {
-            if (m != null && m.health() < result.health() ) {
+            if (m != null && m.getHealth() < result.getHealth() ) {
                 result = m;
             }
         }
