@@ -1,10 +1,8 @@
 package gui;
-import javax.swing.*;
-
 import game.Monster;
-
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 /**
  * MonsterDisplayPanel - Displays monster tiles in a responsive grid
@@ -99,7 +97,9 @@ public class MonsterDisplayPanel extends JPanel {
     /**
      * MonsterTile - Individual monster display card
      */
-    private class MonsterTile extends JPanel {
+    // static: Java 8 (what some school laptops run) refuses the static color
+    // fields below inside a non-static inner class. Java 16 and later allow it.
+    private static class MonsterTile extends JPanel {
         private Monster monster;
         private int index;
         private boolean highlighted = false;

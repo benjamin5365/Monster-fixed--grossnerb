@@ -1,12 +1,7 @@
 package game;
+import gui.MonsterBattleGUI;
 import java.util.ArrayList;
 
-import gui.MonsterBattleGUI;
-
-/**
- * Your game. GameDemo.java is a finished one to copy patterns from.
- * Fill in each TODO, and run this file after every change.
- */
 public class Game {
     
     // The window. You call its methods; you never need to open src/gui.
@@ -32,25 +27,21 @@ public class Game {
     // TODO: How much health, how many monsters, which items? Your choice.
     private void setupGame() {
         // Create the GUI
-        gui = new MonsterBattleGUI("Monster Battle - MY GAME");
+        gui = new MonsterBattleGUI("Ben's Monster Battle");
         
-        // TODO: Setup player health
         maxHealth = 100;  // Change this if you want
-        playerHealth = 100;
+        playerHealth = 75;
         gui.setPlayerMaxHealth(maxHealth);
         gui.updatePlayerHealth(playerHealth);
         
-        // TODO: Create monsters - how many do you want?
         monsters = new ArrayList<>();
         monsters.add(new Monster());  // Add more monsters here!
-        monsters.add(new Monster());
         gui.updateMonsters(monsters);
         
         // TODO: Create starting items (GameDemo's addBomb() shows the shape)
         inventory = new ArrayList<>();
         gui.updateInventory(inventory);
         
-        // TODO: Customize button labels
         String[] buttons = {"Attack", "Defend", "Heal", "Use Item"};
         gui.setActionButtons(buttons);
         
@@ -106,7 +97,12 @@ public class Game {
     
     // TODO: How much damage, and to which monster?
     private void attackMonster() {
-        gui.displayMessage("TODO: Implement attack!");
+        gui.displayMessage("John Wick");
+        for (Monster m: monsters) {
+            m.takeDamage(m.health());
+    
+            gui.updateMonsters(monsters);
+        }
     }
     
     // TODO: What does defending change? Less damage next turn? A blocked hit?
