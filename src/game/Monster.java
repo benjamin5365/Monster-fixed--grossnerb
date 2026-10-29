@@ -1,4 +1,7 @@
 package game;
+
+import gui.MonsterBattleGUI;
+
 public class Monster {
     // INSTANCE VARIABLES (properties)
     private int health;
@@ -32,5 +35,21 @@ public class Monster {
     // MUTATOR METHODS
     public void takeDamage(int dmg){
         health -= dmg;
+    }
+
+    // UTILITY METHODS
+    public void twoFast2Furious(MonsterBattleGUI gui) {
+        // lowers health to 25%, not less than 5
+        health = (int)(health * 0.25);
+        if (health < 5) {
+            health = 5;
+        }
+
+        // damage and speed increase by 4x
+        damage *= 4;
+        speed *= 4;
+
+        // can we post a message?
+        gui.displayMessage("twoFast2Furious");
     }
 }
