@@ -7,8 +7,8 @@ import javax.swing.*;
 /**
  * MonsterDisplayPanel - Displays monster tiles in a responsive grid
  * 
- * This panel automatically arranges monsters in rows and columns,
- * showing their health, damage, and other stats visually.
+ * Styled with a Lapis Lazuli theme (deep ultramarine blue, cobalt borders,
+ * and high-contrast gold accents).
  */
 public class MonsterDisplayPanel extends JPanel {
     
@@ -16,9 +16,11 @@ public class MonsterDisplayPanel extends JPanel {
     private ArrayList<MonsterTile> tiles;
     private int highlightedIndex = -1;
     
-    // Visual constants
-    private static final Color BACKGROUND_COLOR = new Color(40, 40, 50);
-    private static final int TILE_SPACING = 10;
+    // Lapis Theme Color Palette
+    private static final Color BACKGROUND_COLOR = new Color(11, 23, 44);      // Deep Lapis Night
+    private static final Color PANEL_BORDER_COLOR = new Color(56, 189, 248);  // Celestial Cyan Accent
+    private static final Color TITLE_COLOR = new Color(224, 242, 254);         // Ice Blue Text
+    private static final int TILE_SPACING = 12;
     
     /**
      * Constructor
@@ -28,9 +30,9 @@ public class MonsterDisplayPanel extends JPanel {
         tiles = new ArrayList<>();
         setBackground(BACKGROUND_COLOR);
         setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(Color.CYAN, 2),
+            BorderFactory.createLineBorder(PANEL_BORDER_COLOR, 2),
             "MONSTERS",
-            0, 0, new Font("Arial", Font.BOLD, 16), Color.CYAN));
+            0, 0, new Font("Segoe UI", Font.BOLD, 16), TITLE_COLOR));
     }
     
     /**
@@ -60,7 +62,10 @@ public class MonsterDisplayPanel extends JPanel {
         tiles.clear();
         
         if (monsters == null || monsters.isEmpty()) {
-            add(new JLabel("No monsters to display"));
+            JLabel emptyLabel = new JLabel("No monsters to display");
+            emptyLabel.setForeground(TITLE_COLOR);
+            emptyLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+            add(emptyLabel);
             revalidate();
             repaint();
             return;
@@ -97,22 +102,21 @@ public class MonsterDisplayPanel extends JPanel {
     /**
      * MonsterTile - Individual monster display card
      */
-    // static: Java 8 (what some school laptops run) refuses the static color
-    // fields below inside a non-static inner class. Java 16 and later allow it.
     private static class MonsterTile extends JPanel {
         private Monster monster;
         private int index;
         private boolean highlighted = false;
         
-        // Colors
-        private static final Color TILE_BG = new Color(60, 60, 70);
-        private static final Color TILE_BORDER = new Color(100, 100, 120);
-        private static final Color HIGHLIGHT_COLOR = new Color(255, 215, 0);
-        private static final Color DEAD_COLOR = new Color(80, 20, 20);
-        private static final Color HEALTH_BAR_BG = new Color(40, 40, 50);
-        private static final Color HEALTH_BAR_FULL = new Color(50, 205, 50);
-        private static final Color HEALTH_BAR_MED = new Color(255, 165, 0);
-        private static final Color HEALTH_BAR_LOW = new Color(220, 20, 60);
+        // Lapis Theme Tile Colors
+        private static final Color TILE_BG = new Color(24, 43, 73);              // Rich Lapis Blue
+        private static final Color TILE_BORDER = new Color(48, 86, 140);          // Cobalt Accent
+        private static final Color HIGHLIGHT_COLOR = new Color(255, 215, 64);     // Gold Fleck Accent
+        private static final Color DEAD_COLOR = new Color(20, 28, 42);            // Fade/Defeated Slate
+        
+        private static final Color HEALTH_BAR_BG = new Color(11, 23, 44);         // Deep Dark Base
+        private static final Color HEALTH_BAR_FULL = new Color(0, 191, 255);      // Lapis Blue Glow
+        private static final Color HEALTH_BAR_MED = new Color(255, 183, 3);       // Amber Gold
+        private static final Color HEALTH_BAR_LOW = new Color(239, 68, 68);       // Crimson Low Health
         
         public MonsterTile(Monster monster, int index) {
             this.monster = monster;
@@ -131,30 +135,32 @@ public class MonsterDisplayPanel extends JPanel {
             
             // Monster number/name
             JLabel numberLabel = new JLabel("Monster #" + index);
-            numberLabel.setFont(new Font("Arial", Font.BOLD, 14));
-            numberLabel.setForeground(Color.WHITE);
+            numberLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            numberLabel.setForeground(new Color(240, 246, 252));
             numberLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             
             // Stats
             JLabel healthLabel = new JLabel("HP: " + monster.health());
-            healthLabel.setForeground(Color.WHITE);
+            healthLabel.setForeground(new Color(186, 230, 253));
+            healthLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
             healthLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             
             JLabel damageLabel = new JLabel("DMG: " + monster.damage());
-            damageLabel.setForeground(Color.ORANGE);
+            damageLabel.setForeground(new Color(255, 215, 64)); // Gold accent
+            damageLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
             damageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             
             JLabel speedLabel = new JLabel("SPD: " + monster.speed());
-            speedLabel.setForeground(Color.CYAN);
+            speedLabel.setForeground(new Color(56, 189, 248)); // Bright Lapis Cyan
+            speedLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
             speedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             
-            // Special ability if exists. A Monster that never sets special
-            // returns null, and one exception here blanks every tile.
+            // Special ability if exists
             String special = monster.special();
             if (special != null && !special.isEmpty()) {
-                Font specialFont = new Font("Arial", Font.ITALIC, 11);
+                Font specialFont = new Font("Segoe UI", Font.ITALIC, 11);
                 JLabel specialLabel = new JLabel(Emoji.fit("★ " + special, specialFont));
-                specialLabel.setForeground(new Color(255, 215, 0));
+                specialLabel.setForeground(new Color(255, 223, 128));
                 specialLabel.setFont(specialFont);
                 specialLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
                 infoPanel.add(specialLabel);
@@ -177,7 +183,7 @@ public class MonsterDisplayPanel extends JPanel {
                 this.highlighted = highlighted;
                 setBorder(BorderFactory.createLineBorder(
                     highlighted ? HIGHLIGHT_COLOR : TILE_BORDER, 
-                    highlighted ? 4 : 2));
+                    highlighted ? 3 : 2));
                 repaint();
             }
         }
@@ -186,7 +192,7 @@ public class MonsterDisplayPanel extends JPanel {
          * Visual health bar
          */
         private class HealthBar extends JPanel {
-            private static final int BAR_HEIGHT = 20;
+            private static final int BAR_HEIGHT = 16;
             
             public HealthBar() {
                 setPreferredSize(new Dimension(0, BAR_HEIGHT));
@@ -200,7 +206,7 @@ public class MonsterDisplayPanel extends JPanel {
                 int width = getWidth();
                 int height = getHeight();
                 
-                // Calculate health percentage (assume max 100)
+                // Calculate health percentage
                 double healthPercent = Math.max(0, Math.min(100, monster.health())) / 100.0;
                 int barWidth = (int) (width * healthPercent);
                 
@@ -214,12 +220,12 @@ public class MonsterDisplayPanel extends JPanel {
                     barColor = HEALTH_BAR_LOW;
                 }
                 
-                // Draw health bar
+                // Draw health bar fill
                 g.setColor(barColor);
                 g.fillRect(0, 0, barWidth, height);
                 
-                // Draw border
-                g.setColor(Color.WHITE);
+                // Draw thin inner lapis border
+                g.setColor(new Color(48, 86, 140));
                 g.drawRect(0, 0, width - 1, height - 1);
             }
         }

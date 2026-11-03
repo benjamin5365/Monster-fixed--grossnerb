@@ -1,6 +1,7 @@
 package game;
 
 import gui.MonsterBattleGUI;
+import java.util.ArrayList;
 
 public class Monster {
     // INSTANCE VARIABLES (properties)
@@ -37,7 +38,26 @@ public class Monster {
         health -= dmg;
     }
 
+    public void heal(int heal) {
+        health += heal;
+    }
+
     // UTILITY METHODS
+    public void heal (Monster friend, int heal) {
+        friend.heal(heal);
+    }
+
+    public void jan6(ArrayList<Monster> monsters, MonsterBattleGUI gui) {
+        gui.displayMessage("All beserk!");
+        for (Monster m: monsters) {
+            if ( (monsters != null) && (m != null) ) {
+                m.twoFast2Furious(gui);
+            }
+    
+            gui.updateMonsters(monsters);
+        }
+    }
+
     public void twoFast2Furious(MonsterBattleGUI gui) {
         // lowers health to 25%, not less than 5
         health = (int)(health * 0.25);
