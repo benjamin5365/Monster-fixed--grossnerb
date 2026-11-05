@@ -1,12 +1,10 @@
 package gui;
-import javax.swing.*;
-
 import game.Item;
 import game.Monster;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 /**
  * MonsterBattleGUI - A simple display API for monster battle games
@@ -17,7 +15,9 @@ import java.util.ArrayList;
  * STUDENT API METHODS:
  * - updateMonsters(ArrayList<Monster>) - Show current monsters
  * - updatePlayerHealth(int) - Show player health
+ * - setPlayerMaxHealth(int) - Set max player health
  * - setPlayerSpeed(int) - Set player speed stat
+ * - updateShield(int) - Show player shield
  * - updateInventory(ArrayList<Item>) - Show items
  * - displayMessage(String) - Show a message
  * - setActionButtons(String[]) - Label the 4 buttons
@@ -121,6 +121,14 @@ public class MonsterBattleGUI extends JFrame {
      */
     public void setPlayerSpeed(int speed) {
         SwingUtilities.invokeLater(() -> playerStatusPanel.setSpeed(speed));
+    }
+
+    /**
+     * Update player's shield value
+     * @param shield Current shield value
+     */
+    public void updateShield(int shield) {
+        SwingUtilities.invokeLater(() -> playerStatusPanel.updateShield(shield));
     }
     
     /**

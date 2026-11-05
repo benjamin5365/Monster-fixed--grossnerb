@@ -97,7 +97,6 @@ public class Game {
         }
     }
     
-    // TODO: How much damage, and to which monster?
     private void attackMonster() {
         gui.displayMessage("John Wick");
         for (Monster m: monsters) {
@@ -112,6 +111,7 @@ public class Game {
     private void defend() {
         shield += shieldUp;
         gui.displayMessage("Shielded up!");
+        gui.updateShield(shield);
 
     }
     
@@ -140,9 +140,13 @@ public class Game {
         item.use();  // The item knows what to do!
     }
     
-    // TODO: Which monster attacks, and for how much? A special move goes here.
     private void monsterAttack() {
-        gui.displayMessage("TODO: Implement monster attack!");
+        Monster monster = getRandomLivingMonster();
+        int currentDamage = (int)monster.damage();
+        playerHealth -= currentDamage;
+        gui.displayMessage("Monster hits for " + currentDamage + " damage");
+        gui.updatePlayerHealth(playerHealth);
+
     }
     
     // Helpers. Add your own below these two.

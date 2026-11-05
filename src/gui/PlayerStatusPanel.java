@@ -1,9 +1,9 @@
 package gui;
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 /**
- * PlayerStatusPanel - Displays the player's health and stats
+ * PlayerStatusPanel - Displays the player's health, shield, and stats
  * 
  * Shows a large, prominent health bar for the player with visual indicators
  */
@@ -12,8 +12,10 @@ public class PlayerStatusPanel extends JPanel {
     private int currentHealth;
     private int maxHealth;
     private int speed;
+    private int shield;
     private JLabel healthLabel;
     private JLabel speedLabel;
+    private JLabel shieldLabel;
     private HealthBar healthBar;
     
     // Visual constants
@@ -24,7 +26,7 @@ public class PlayerStatusPanel extends JPanel {
     private static final Color HEALTH_BAR_LOW = new Color(220, 20, 60);
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 16);
     private static final Font HEALTH_FONT = new Font("Arial", Font.BOLD, 20);
-    private static final Font SPEED_FONT = new Font("Arial", Font.BOLD, 14);
+    private static final Font STAT_FONT = new Font("Arial", Font.BOLD, 14);
     private static final int BAR_HEIGHT = 30;
     
     /**
@@ -42,6 +44,7 @@ public class PlayerStatusPanel extends JPanel {
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
         this.speed = 10; // Default speed
+        this.shield = 0;  // Default shield
         
         setLayout(new BorderLayout(10, 10));
         setBackground(PANEL_BG);
@@ -65,7 +68,7 @@ public class PlayerStatusPanel extends JPanel {
         titleLabel.setFont(TITLE_FONT);
         titleLabel.setForeground(Color.CYAN);
         
-        // Right side: health and speed
+        // Right side: health, speed, and shield
         JPanel statsPanel = new JPanel();
         statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
         statsPanel.setOpaque(false);
@@ -75,13 +78,24 @@ public class PlayerStatusPanel extends JPanel {
         healthLabel.setForeground(Color.WHITE);
         healthLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         
-        speedLabel = new JLabel("SPD: " + speed, SwingConstants.RIGHT);
-        speedLabel.setFont(SPEED_FONT);
+        // Sub-stats panel placing speed and shield side-by-side
+        JPanel subStatsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
+        subStatsPanel.setOpaque(false);
+        subStatsPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        
+        speedLabel = new JLabel("SPD: " + speed);
+        speedLabel.setFont(STAT_FONT);
         speedLabel.setForeground(Color.CYAN);
-        speedLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        
+        shieldLabel = new JLabel("SHD: " + shield);
+        shieldLabel.setFont(STAT_FONT);
+        shieldLabel.setForeground(Color.CYAN);
+        
+        subStatsPanel.add(speedLabel);
+        subStatsPanel.add(shieldLabel);
         
         statsPanel.add(healthLabel);
-        statsPanel.add(speedLabel);
+        statsPanel.add(subStatsPanel);
         
         titlePanel.add(titleLabel, BorderLayout.WEST);
         titlePanel.add(statsPanel, BorderLayout.EAST);
@@ -132,6 +146,23 @@ public class PlayerStatusPanel extends JPanel {
         this.speed = speed;
         speedLabel.setText("SPD: " + speed);
     }
+
+    /**
+     * Update the player's shield value (called via gui.updateShield(shield))
+     * @param shield The shield value
+     */
+    public void updateShield(int shield) {
+        this.shield = shield;
+        shieldLabel.setText("SHD: " + shield);
+    }
+    
+    /**
+     * Set the player's shield (alias for updateShield)
+     * @param shield The shield value
+     */
+    public void setShield(int shield) {
+        updateShield(shield);
+    }
     
     /**
      * Get current health
@@ -155,6 +186,14 @@ public class PlayerStatusPanel extends JPanel {
      */
     public int getSpeed() {
         return speed;
+    }
+
+    /**
+     * Get player shield
+     * @return The shield value
+     */
+    public int getShield() {
+        return shield;
     }
     
     /**

@@ -6,9 +6,6 @@ import javax.swing.*;
 
 /**
  * ActionButtonPanel - Four customizable action buttons with a Lapis theme.
- * 
- * Features a subtle vertical hover-lift elevation effect with accent glow borders 
- * and drop shadows.
  */
 public class ActionButtonPanel extends JPanel {
     
@@ -31,8 +28,6 @@ public class ActionButtonPanel extends JPanel {
     
     // Accent Colors
     private static final Color BORDER_NORMAL = new Color(48, 86, 140);       // Cobalt Border
-    private static final Color BORDER_HOVER = new Color(255, 215, 64);       // Radiant Gold Glow Border
-    private static final Color SHADOW_COLOR = new Color(5, 10, 20, 160);      // Soft Drop Shadow Accent
     
     private static final Font BUTTON_FONT = new Font("Segoe UI", Font.BOLD, 15);
     
@@ -61,7 +56,7 @@ public class ActionButtonPanel extends JPanel {
     }
     
     /**
-     * Create a styled button with hover-lift elevation
+     * Create a styled button
      * @param label Button label
      * @param index Button index (0-3)
      * @return The styled button
@@ -113,7 +108,7 @@ public class ActionButtonPanel extends JPanel {
     }
 
     /**
-     * Custom JButton with vertical hover-lift elevation effect.
+     * Custom JButton with stationary flat lapis styling.
      */
     private static class LapisHoverButton extends JButton {
         private boolean hovering = false;
@@ -170,22 +165,6 @@ public class ActionButtonPanel extends JPanel {
             int width = getWidth();
             int height = getHeight();
 
-            // Calculate vertical lift offset (-4px on hover, +1px on click)
-            int liftOffset = 0;
-            if (isEnabled()) {
-                if (pressed) {
-                    liftOffset = 1;
-                } else if (hovering) {
-                    liftOffset = -4;
-                }
-            }
-
-            // Draw elevation drop shadow when hovered
-            if (hovering && isEnabled() && liftOffset < 0) {
-                g2.setColor(SHADOW_COLOR);
-                g2.fillRect(2, height - 4, width - 4, 4);
-            }
-
             // Background color state
             Color bgColor;
             if (!isEnabled()) {
@@ -198,18 +177,15 @@ public class ActionButtonPanel extends JPanel {
                 bgColor = BUTTON_BG;
             }
 
-            // Apply lift translation for button body & border
-            g2.translate(0, liftOffset);
-
             // Draw button background body
             g2.setColor(bgColor);
-            g2.fillRect(0, 0, width, height - (hovering && isEnabled() ? 4 : 0));
+            g2.fillRect(0, 0, width, height);
 
-            // Draw border
-            Color borderColor = !isEnabled() ? BUTTON_DISABLED : (hovering ? BORDER_HOVER : BORDER_NORMAL);
+            // Draw border using standard cobalt border color
+            Color borderColor = !isEnabled() ? BUTTON_DISABLED : BORDER_NORMAL;
             g2.setColor(borderColor);
-            g2.setStroke(new BasicStroke(hovering && isEnabled() ? 2.5f : 2.0f));
-            g2.drawRect(1, 1, width - 2, height - (hovering && isEnabled() ? 5 : 2));
+            g2.setStroke(new BasicStroke(2.0f));
+            g2.drawRect(1, 1, width - 2, height - 2);
 
             g2.dispose();
 
@@ -220,11 +196,7 @@ public class ActionButtonPanel extends JPanel {
                 setForeground(TEXT_COLOR);
             }
 
-            // Shift text rendering along with lift offset
-            Graphics textGraphics = g.create();
-            textGraphics.translate(0, liftOffset);
-            super.paintComponent(textGraphics);
-            textGraphics.dispose();
+            super.paintComponent(g);
         }
     }
 }
