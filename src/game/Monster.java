@@ -1,17 +1,16 @@
 package game;
 
-import gui.MonsterBattleGUI;
-import java.util.ArrayList;
-
 public class Monster {
     // INSTANCE VARIABLES (properties)
     private int health;
     private double damage;
     private int speed;
     private String special; 
+    private Game game;
 
     // CONSTRUCTOR
-    public Monster(){
+    public Monster(Game game){
+        this.game = game;
         // randomly generate health, damage, speed
         health = (int)(Math.random() * 80 + 1) + 20;
         // random 10 - 50
@@ -22,14 +21,31 @@ public class Monster {
         special = "";
     }
     // OVERLOADED CONSTRUCTOR
-    public Monster(String special){
-        this();
+    public Monster(Game game, String special){
+        this(game);
         this.special = special;
+
+        if (this.special.equals("pfundstein")) {
+            game.getGUI().displayMessage("Keep leading.. to your DOOM!");
+        }
+
+        if (this.special.equals("Lebron")) {
+            game.getGUI().displayMessage("This one's for you Cleveland");
+        }
+
     }
     
     // ACCESSOR METHODS
     public int health() { return this.health; }
-    public double damage() { return Math.round(damage * 100.0) / 100.0; }
+    public double damage() { 
+        if (this.special.equals("pfundstein")) {
+            game.getGUI().displayMessage("Where's your YONDER!");
+        }
+        if (this.special.equals("Lebron")) {
+            game.getGUI().displayMessage("Threeee");
+        }
+        return Math.round(damage * 100.0) / 100.0;
+    }
     public int speed() { return speed; }
     public String special() { return this.special; }
 
@@ -47,18 +63,18 @@ public class Monster {
         friend.heal(heal);
     }
 
-    public void jan6(ArrayList<Monster> monsters, MonsterBattleGUI gui) {
-        gui.displayMessage("All beserk!");
-        for (Monster m: monsters) {
-            if ( (monsters != null) && (m != null) ) {
-                m.twoFast2Furious(gui);
+    public void engrage() {
+        game.getGUI().displayMessage("All beserk!");
+        for (Monster m: game.getMonsters()) {
+            if ( (game.getMonsters() != null) && (m != null) ) {
+                m.twoFast2Furious();
             }
     
-            gui.updateMonsters(monsters);
+            game.getGUI().updateMonsters(game.getMonsters());
         }
     }
 
-    public void twoFast2Furious(MonsterBattleGUI gui) {
+    public void twoFast2Furious() {
         // lowers health to 25%, not less than 5
         health = (int)(health * 0.25);
         if (health < 5) {
@@ -70,6 +86,6 @@ public class Monster {
         speed *= 4;
 
         // can we post a message?
-        gui.displayMessage("twoFast2Furious");
+        game.getGUI().displayMessage("twoFast2Furious");
     }
 }

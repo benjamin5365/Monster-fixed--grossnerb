@@ -25,8 +25,16 @@ public class Game {
         setupGame();
         gameLoop();
     }
+
+    // ACCESSORS
+    public MonsterBattleGUI getGUI() {
+        return gui;
+    }
+
+    public ArrayList<Monster> getMonsters() {
+        return monsters;
+    }
     
-    // TODO: How much health, how many monsters, which items? Your choice.
     private void setupGame() {
         // Create the GUI
         gui = new MonsterBattleGUI("Ben's Monster Battle");
@@ -37,7 +45,9 @@ public class Game {
         gui.updatePlayerHealth(playerHealth);
         
         monsters = new ArrayList<>();
-        monsters.add(new Monster());  // Add more monsters here!
+        monsters.add(new Monster(this));  // Add more monsters here!
+        monsters.add(new Monster(this, "pfundstein"));
+        monsters.add(new Monster(this, "Lebron")); 
         gui.updateMonsters(monsters);
         
         // TODO: Create starting items (GameDemo's addBomb() shows the shape)
@@ -98,10 +108,19 @@ public class Game {
     }
     
     private void attackMonster() {
-        gui.displayMessage("John Wick");
+        gui.displayMessage("Attack");
         for (Monster m: monsters) {
             if ( (monsters != null) && (m != null) ) {
-                m.takeDamage(m.health());
+                if (m.special().equals("Lebron")) {
+                    if ( Math.random() < 0.25  ) {
+                        gui.displayMessage("Blocked by JAMES!");
+                    } else {
+                        m.takeDamage(30);
+                    }
+                } else {
+                    m.takeDamage(30);
+                }
+                
             }
     
             gui.updateMonsters(monsters);
