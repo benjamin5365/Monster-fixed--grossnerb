@@ -1,11 +1,12 @@
 package gui;
+
 import game.Monster;
 import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
 /**
- * MonsterDisplayPanel - Displays monster tiles in a responsive grid
+ * MonsterDisplayPanel - Displays monster tiles and adjacent message boxes in a responsive grid
  * 
  * Styled with a Lapis Lazuli theme (deep ultramarine blue, cobalt borders,
  * and high-contrast gold accents).
@@ -19,7 +20,7 @@ public class MonsterDisplayPanel extends JPanel {
     // Lapis Theme Color Palette
     private static final Color BACKGROUND_COLOR = new Color(11, 23, 44);      // Deep Lapis Night
     private static final Color PANEL_BORDER_COLOR = new Color(56, 189, 248);  // Celestial Cyan Accent
-    private static final Color TITLE_COLOR = new Color(224, 242, 254);         // Ice Blue Text
+    private static final Color TITLE_COLOR = new Color(224, 242, 254);        // Ice Blue Text
     private static final int TILE_SPACING = 12;
     
     /**
@@ -53,6 +54,25 @@ public class MonsterDisplayPanel extends JPanel {
         this.highlightedIndex = index;
         repaint();
     }
+
+    /**
+     * Update the message box next to a specific monster
+     * @param monsterNum The 0-based index of the monster
+     * @param message The text to display in that monster's message box
+     */
+    public void displayMessage(int monsterNum, String message) {
+        Runnable updateTask = () -> {
+            if (monsterNum >= 0 && monsterNum < tiles.size()) {
+                tiles.get(monsterNum).setMessage(message);
+            }
+        };
+
+        if (SwingUtilities.isEventDispatchThread()) {
+            updateTask.run();
+        } else {
+            SwingUtilities.invokeLater(updateTask);
+        }
+    }
     
     /**
      * Create tiles for all monsters
@@ -78,7 +98,7 @@ public class MonsterDisplayPanel extends JPanel {
         
         setLayout(new GridLayout(rows, cols, TILE_SPACING, TILE_SPACING));
         
-        // Create a tile for each monster
+        // Create a tile + message box pair for each monster
         for (int i = 0; i < monsters.size(); i++) {
             MonsterTile tile = new MonsterTile(monsters.get(i), i);
             tiles.add(tile);
@@ -100,35 +120,45 @@ public class MonsterDisplayPanel extends JPanel {
     }
     
     /**
-     * MonsterTile - Individual monster display card
+     * MonsterTile - Holds the monster stat card on the left and a square message box on the right
      */
     private static class MonsterTile extends JPanel {
         private Monster monster;
         private int index;
         private boolean highlighted = false;
+
+        private JPanel cardPanel;
+        private JTextArea messageArea;
         
         // Lapis Theme Tile Colors
         private static final Color TILE_BG = new Color(24, 43, 73);              // Rich Lapis Blue
-        private static final Color TILE_BORDER = new Color(48, 86, 140);          // Cobalt Accent
-        private static final Color HIGHLIGHT_COLOR = new Color(255, 215, 64);     // Gold Fleck Accent
-        private static final Color DEAD_COLOR = new Color(20, 28, 42);            // Fade/Defeated Slate
+        private static final Color MSG_BOX_BG = new Color(17, 33, 58);           // Darker Lapis Slate
+        private static final Color TILE_BORDER = new Color(48, 86, 140);         // Cobalt Accent
+        private static final Color HIGHLIGHT_COLOR = new Color(255, 215, 64);    // Gold Fleck Accent
+        private static final Color DEAD_COLOR = new Color(20, 28, 42);           // Fade/Defeated Slate
         
-        private static final Color HEALTH_BAR_BG = new Color(11, 23, 44);         // Deep Dark Base
-        private static final Color HEALTH_BAR_FULL = new Color(0, 191, 255);      // Lapis Blue Glow
-        private static final Color HEALTH_BAR_MED = new Color(255, 183, 3);       // Amber Gold
-        private static final Color HEALTH_BAR_LOW = new Color(239, 68, 68);       // Crimson Low Health
+        private static final Color HEALTH_BAR_BG = new Color(11, 23, 44);        // Deep Dark Base
+        private static final Color HEALTH_BAR_FULL = new Color(0, 191, 255);     // Lapis Blue Glow
+        private static final Color HEALTH_BAR_MED = new Color(255, 183, 3);      // Amber Gold
+        private static final Color HEALTH_BAR_LOW = new Color(239, 68, 68);      // Crimson Low Health
         
         public MonsterTile(Monster monster, int index) {
             this.monster = monster;
             this.index = index;
-            setLayout(new BorderLayout(5, 5));
-            setBackground(monster.health() > 0 ? TILE_BG : DEAD_COLOR);
-            setBorder(BorderFactory.createLineBorder(TILE_BORDER, 2));
+
+            // Split each grid cell into two equal side-by-side boxes (Monster Card | Message Box)
+            setLayout(new GridLayout(1, 2, 6, 0));
+            setOpaque(false);
+
             createLayout();
         }
         
         private void createLayout() {
-            // Monster info panel
+            // --- LEFT BOX: Monster Stats Card ---
+            cardPanel = new JPanel(new BorderLayout(5, 5));
+            cardPanel.setBackground(monster.health() > 0 ? TILE_BG : DEAD_COLOR);
+            cardPanel.setBorder(BorderFactory.createLineBorder(TILE_BORDER, 2));
+
             JPanel infoPanel = new JPanel();
             infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
             infoPanel.setOpaque(false);
@@ -172,16 +202,39 @@ public class MonsterDisplayPanel extends JPanel {
             infoPanel.add(damageLabel);
             infoPanel.add(speedLabel);
             
-            add(infoPanel, BorderLayout.CENTER);
-            
-            // Health bar at bottom
-            add(new HealthBar(), BorderLayout.SOUTH);
+            cardPanel.add(infoPanel, BorderLayout.CENTER);
+            cardPanel.add(new HealthBar(), BorderLayout.SOUTH);
+
+            // --- RIGHT BOX: Square Message Box ---
+            JPanel messagePanel = new JPanel(new BorderLayout());
+            messagePanel.setBackground(monster.health() > 0 ? MSG_BOX_BG : DEAD_COLOR);
+            messagePanel.setBorder(BorderFactory.createLineBorder(TILE_BORDER, 2));
+
+            messageArea = new JTextArea();
+            messageArea.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+            messageArea.setForeground(TITLE_COLOR);
+            messageArea.setLineWrap(true);
+            messageArea.setWrapStyleWord(true);
+            messageArea.setEditable(false);
+            messageArea.setFocusable(false);
+            messageArea.setOpaque(false);
+            messageArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
+            messagePanel.add(messageArea, BorderLayout.CENTER);
+
+            // Add both boxes side-by-side
+            add(cardPanel);
+            add(messagePanel);
+        }
+
+        public void setMessage(String message) {
+            messageArea.setText(message != null ? message : "");
         }
         
         public void setHighlighted(boolean highlighted) {
             if (this.highlighted != highlighted) {
                 this.highlighted = highlighted;
-                setBorder(BorderFactory.createLineBorder(
+                cardPanel.setBorder(BorderFactory.createLineBorder(
                     highlighted ? HIGHLIGHT_COLOR : TILE_BORDER, 
                     highlighted ? 3 : 2));
                 repaint();

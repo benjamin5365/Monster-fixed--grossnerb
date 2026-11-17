@@ -146,6 +146,10 @@ public class MonsterBattleGUI extends JFrame {
     public void displayMessage(String message) {
         SwingUtilities.invokeLater(() -> messagePanel.setMessage(message));
     }
+
+    public void displayMessage(int monsterNum, String message) {
+        monsterDisplayPanel.displayMessage(monsterNum, message);
+    }
     
     /**
      * Set button labels (4 buttons: indices 0-3)

@@ -12,7 +12,7 @@ public class Game {
     private ArrayList<Item> inventory;
     private int playerHealth;
     private int shield = 0;
-    private final int shieldUp = 20;
+    private final int shieldUp = 10;
     private int maxHealth;
     
     public static void main(String[] args) {
@@ -45,9 +45,19 @@ public class Game {
         gui.updatePlayerHealth(playerHealth);
         
         monsters = new ArrayList<>();
-        monsters.add(new Monster(this));  // Add more monsters here!
-        monsters.add(new Monster(this, "pfundstein"));
-        monsters.add(new Monster(this, "Lebron")); 
+
+        for(int i = 0; i < 4; i++) {
+            int monsterType = (int)(Math.random()*3) + 1;
+            if (monsterType == 1) {
+                monsters.add(new Monster(this));
+            }
+            else if (monsterType == 2) {
+                monsters.add(new Monster(this, "pfundstein"));
+            }
+            else if (monsterType == 3) {
+                monsters.add(new Monster(this, "Lebron")); 
+            }
+        }
         gui.updateMonsters(monsters);
         
         // TODO: Create starting items (GameDemo's addBomb() shows the shape)
@@ -138,8 +148,7 @@ public class Game {
         int healNumber = (int)(Math.random() * 41);
         playerHealth += healNumber;
         if (playerHealth > maxHealth) {
-            maxHealth = playerHealth;
-            gui.setPlayerMaxHealth(maxHealth);
+            playerHealth = maxHealth;
         }
 
         gui.updatePlayerHealth(playerHealth);
@@ -162,6 +171,15 @@ public class Game {
     private void monsterAttack() {
         Monster monster = getRandomLivingMonster();
         int currentDamage = (int)monster.damage();
+        if (shield > 0) {
+            // Reduce incoming damage by shield
+            if (shield > currentDamage) {
+                currentDamage = 0;
+            } else {
+                currentDamage -= shield;
+            }
+        }
+
         playerHealth -= currentDamage;
         gui.displayMessage("Monster hits for " + currentDamage + " damage");
         gui.updatePlayerHealth(playerHealth);
