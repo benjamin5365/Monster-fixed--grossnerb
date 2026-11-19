@@ -7,6 +7,7 @@ public class Monster {
     private int speed;
     private String special; 
     private Game game;
+    private int num;
 
     // CONSTRUCTOR
     public Monster(Game game){
@@ -21,28 +22,31 @@ public class Monster {
         special = "";
     }
     // OVERLOADED CONSTRUCTOR
-    public Monster(Game game, String special){
+    public Monster(Game game, String special, int num){
         this(game);
         this.special = special;
+        this.num = num;
 
+    }
+
+    public void startMessages() {
         if (this.special.equals("pfundstein")) {
-            game.getGUI().displayMessage("Keep leading.. to your DOOM!");
+            game.getGUI().displayMessage(num, "Keep leading.. to your DOOM!");
         }
 
         if (this.special.equals("Lebron")) {
-            game.getGUI().displayMessage("This one's for you Cleveland");
+            game.getGUI().displayMessage(num, "This one's for you Cleveland");
         }
-
     }
     
     // ACCESSOR METHODS
     public int health() { return this.health; }
     public double damage() { 
         if (this.special.equals("pfundstein")) {
-            game.getGUI().displayMessage("Where's your YONDER!");
+            game.getGUI().displayMessage(num, "Where's your YONDER!");
         }
         if (this.special.equals("Lebron")) {
-            game.getGUI().displayMessage("Threeee");
+            game.getGUI().displayMessage(num, "Threeee");
         }
         return Math.round(damage * 100.0) / 100.0;
     }

@@ -148,7 +148,7 @@ public class MonsterBattleGUI extends JFrame {
     }
 
     public void displayMessage(int monsterNum, String message) {
-        monsterDisplayPanel.displayMessage(monsterNum, message);
+        SwingUtilities.invokeLater(() -> monsterPanel.displayMessage(monsterNum, message));
     }
     
     /**

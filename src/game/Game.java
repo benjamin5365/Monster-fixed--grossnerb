@@ -52,17 +52,23 @@ public class Game {
                 monsters.add(new Monster(this));
             }
             else if (monsterType == 2) {
-                monsters.add(new Monster(this, "pfundstein"));
+                monsters.add(new Monster(this, "pfundstein", i));
             }
             else if (monsterType == 3) {
-                monsters.add(new Monster(this, "Lebron")); 
+                monsters.add(new Monster(this, "Lebron", i)); 
             }
         }
         gui.updateMonsters(monsters);
+
+        for (Monster m: monsters) {
+            
+        }
         
-        // TODO: Create starting items (GameDemo's addBomb() shows the shape)
         inventory = new ArrayList<>();
         gui.updateInventory(inventory);
+        addBomb(10);
+        addHealthPotion(10);
+        addShieldPotion(15);
         
         String[] buttons = {"Attack", "Defend", "Heal", "Use Item"};
         gui.setActionButtons(buttons);
@@ -202,5 +208,36 @@ public class Game {
         }
         if (alive.isEmpty()) return null;
         return alive.get((int)(Math.random() * alive.size()));
+    }
+
+    private void addHealthPotion(int healAmount) {
+        inventory.add(new Item("Health Potion", "🧪", () -> {
+            playerHealth = Math.min(maxHealth, playerHealth + healAmount);
+            gui.updatePlayerHealth(playerHealth);
+            gui.displayMessage("💚 Used Health Potion! Healed " + healAmount + " HP!");
+        }));
+    }
+
+    private void addShieldPotion(int shieldAmount) {
+        inventory.add(new Item("Shield Potion", "🧪", () -> {
+            shield = shield + shieldAmount;
+            gui.updateShield(shield);
+            gui.displayMessage("🛡️ Used Shield Potion! Shielded up by " + shieldAmount);
+        }));
+    }
+    
+    /**
+     * Add a bomb to inventory (damages all monsters)
+     */
+    private void addBomb(int damage) {
+        inventory.add(new Item("Bomb", "💣", () -> {
+            for (Monster m : monsters) {
+                if (m.health() > 0) {
+                    m.takeDamage(damage);
+                }
+            }
+            gui.displayMessage("💣 BOOM! All monsters take " + damage + " damage!");
+            gui.updateMonsters(monsters);
+        }));
     }
 }
